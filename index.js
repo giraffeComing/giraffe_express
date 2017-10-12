@@ -4,6 +4,7 @@
 var express = require('express');
 var app = express();
 
+var fortune = require('./lib/fortune.js');
 // 设置 handlebars 视图引擎
 var handlebars = require('express3-handlebars')
     .create({ defaultLayout:'main' });
@@ -14,22 +15,13 @@ app.set('port', process.env.PORT || 3000);
 // static中间件用于指定静态资源
 app.use(express.static(__dirname + '/public'));
 
-var fortunes = [
-    "Conquer your fears or they will conquer you.",
-    "Rivers need springs.",
-    "Do not fear what you don't know.",
-    "You will have a pleasant surprise.",
-    "Whenever possible, keep it simple.",
-];
 
 
 app.get('/', function(req, res) {
     res.render('home'); // 用模板渲染home.handlebars并套入main.handlebars
 });
-app.get('/about', function(req, res){
-    var randomFortune =
-        fortunes[Math.floor(Math.random() * fortunes.length)];
-    res.render('about', { fortune: randomFortune });
+app.get('/about', function(req, res) {
+    res.render('about', { fortune: fortune.getFortune() } );
 });
 // 404 catch-all 处理器（中间件）
 app.use(function(req, res, next){
