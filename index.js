@@ -15,6 +15,12 @@ app.set('port', process.env.PORT || 3000);
 // static中间件用于指定静态资源
 app.use(express.static(__dirname + '/public'));
 
+app.get('/headers', function(req,res){
+    res.set('Content-Type','text/plain');
+    var s = '';
+    for(var name in req.headers) s += name + ': ' + req.headers[name] + '\n';
+    res.send(s);
+});
 
 
 app.get('/', function(req, res) {
