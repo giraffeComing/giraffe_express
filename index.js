@@ -15,6 +15,22 @@ app.set('port', process.env.PORT || 3000);
 // static中间件用于指定静态资源
 app.use(express.static(__dirname + '/public'));
 
+// 处理表单的中间件
+app.use(require('body-parser')());
+
+// 客户端访问/newsletter，表单提交到/process，/process处理表单数据，然后重定向到/thank-you
+app.get('/newsletter', function(req, res){
+// 我们会在后面学到 CSRF……目前，只提供一个虚拟值
+    res.render('newsletter', { csrf: 'CSRF token goes here' });
+});
+app.post('/process', function(req, res){
+    console.log('Form (from querystring): ' + req.query.form);
+    console.log('CSRF token (from hidden form field): ' + req.body._csrf);
+    console.log('Name (from visible form field): ' + req.body.name);
+    console.log('Email (from visible form field): ' + req.body.email);
+    res.redirect(303, '/thank-you');
+});
+
 app.get('/headers', function(req,res){
     res.set('Content-Type','text/plain');
     var s = '';
